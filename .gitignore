@@ -1,0 +1,15 @@
+dist/*
+target/
+lib_managed/
+src_managed/
+.idea/
+.history
+.cache
+.lib/
+.bsp/
+.project/
+
+### Scala ###
+*.class
+*.log
+project/build.properties
