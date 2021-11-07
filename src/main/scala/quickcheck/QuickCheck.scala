@@ -45,6 +45,7 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
   }
 
   property("isSorted always returns true") = forAll { (a: H) =>
+    @tailrec
     def isSorted(min: Int, h: H): Boolean =
       if (isEmpty(h)) true
       else if ( min > findMin(h) ) false
@@ -65,6 +66,19 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     val m = if (isEmpty(h)) 0 else findMin(h)
 
     findMin(insert(m, h)) == m
+  }
+
+  property("meld preserves all elements") = forAll { (h1: H, h2: H) =>
+    @tailrec
+    def heapsEquals(h1: H, h2: H): Boolean =
+      if (isEmpty(h1) && isEmpty(h2)) true
+      else if (findMin(h1) == findMin(h2)) heapsEquals(deleteMin(h1), deleteMin(h2))
+      else false
+
+    val mc = if (findMin(h1) <= findMin(h2)) meld(deleteMin(h1), h2)
+             else meld(h1, deleteMin(h2))
+
+    heapsEquals(deleteMin( meld(h1, h2) ), mc)
   }
 
   lazy val genHeap: Gen[H] = for {
